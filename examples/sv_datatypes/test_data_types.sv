@@ -5,3 +5,12 @@
 // Students can experiment  by compiling and simulating this file
 // and observing the behavior
 //------------------------------------
+module data_types_eg;
+
+
+//bit vs logic difference
+//packed vs unpacked
+
+
+
+endmodule
