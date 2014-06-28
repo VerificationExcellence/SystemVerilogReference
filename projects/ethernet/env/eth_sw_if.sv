@@ -27,6 +27,7 @@ interface eth_sw_if (
 // Default clocking block
 //-----------------------
 default clocking  eth_mon_cb @(posedge clk);
+  default input #2ns output #2ns;
   input clk;
   input resetN;
   input [31:0] inDataA; //Port A input data, start and end of packet pulses
@@ -56,6 +57,7 @@ modport monitor_mp (
 // clocking block for output signals used by driver
 //-----------------------
 clocking  eth_drv_cb @(posedge clk);
+  default input #2ns output #2ns;
   input clk;
   input resetN;
   output [31:0] inDataA; //Port A input data, start and end of packet pulses
