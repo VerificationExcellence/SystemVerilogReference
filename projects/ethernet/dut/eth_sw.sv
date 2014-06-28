@@ -10,10 +10,10 @@ module eth_sw(
   input [31:0] inDataB,
   input inSopB,
   input inEopB,
-  ouput [31:0] outDataA, //output Data and Sop and Eop packet pulses
+  output [31:0] outDataA, //output Data and Sop and Eop packet pulses
   output outSopA,
   output outEopA,
-  ouput [31:0] outDataB, 
+  output [31:0] outDataB, 
   output outSopB,
   output outEopB,
   output portAStall, //Backpressure or stall signals on portA/B
