@@ -1,19 +1,78 @@
 //--------------
+//Packet checker class
 //--------------
+typedef eth_packet_c ;
 class eth_packet_chk_c ;
 
-  //Create an input queue - where driver pushes all packets send in
-  //
+ //Use four mailboxes to see what packets goes in and comes out
+ //Mailbox 0 => packets seen on input port A
+ //Mailbox 1 => packets seen on input port B
+ //Mailbox 2 => packets seen on output port A
+ //Mailbox 3 => packets seen on output port B
+  mailbox mbx_in[4];
 
-  //Function 1: Take an input packet and write a function that looks at DA 
-  //in packet to determine output port
-  //Accordingly push into 2 expected output queues - golden
+  //For each port - get  a packet form input port.
+  //Then call Function 1 (generateExpectedPkt)  and generate expected packets (Maintain 2 expected packet queue for 2 ports)
 
-  //Create another queue for output ports that monitor populates
-  //Check that this matches the golden queues
+  //queue of expected packets on port A and B
+  eth_packet_c exp_pkt_A_q[$];
+  eth_packet_c exp_pkt_B_q[$];
 
-  //Use four mailboxes instead of queues
-  //For each port - get  a packet form input port. Then call Function 1 and generate expected packets
-  //For each port - get a packet from  output port. then call Function 2 and check for correctness
-  
+  function new(mailbox mbx[4]);
+    this.mbx_in = mbx;
+  endfunction
+
+  //--------------------
+  //Main evaluation task
+  //4 threads - 2 of them keeps getting packets on port A and processes them to generate expected packet in A/B queue
+  //          - 2 of them keeps getting packets seen on output ports A and B and compares/checks agains expected packet Q
+  //--------------------
+  task run;
+    for(int i=0; i <4; i++) begin
+      fork
+        begin
+         automatic int port;
+         port=i;
+         get_and_process_pkt(port);
+        end
+      join
+    end //for
+  endtask
+
+  task get_and_process_pkt(int port);
+    eth_packet_c pkt;
+    forever begin
+      pkt = mbx_in[port].get();
+      if(port <2) begin //input packets
+        gen_exp_packet_q(pkt);
+      end else begin //output packets
+        chk_exp_packet_q(port, pkt);
+      end
+    end
+  endtask
+
+  function void gen_exp_packet_q(eth_packet_c pkt);
+    if(pkt.dst_addr == `PORTA_ADDR) begin
+        exp_pkt_A_q.push_back(pkt);
+    end else if(pkt.dst_addr == `PORTB_ADDR) begin
+        exp_pkt_B_q.push_back(pkt);
+    end else begin
+        $error("Illegal Packet received");
+    end
+   endfunction
+
+   function void chk_exp_packet_q(int port, eth_packet_c pkt);
+     eth_packet_c exp;
+     if(port==2) begin
+       exp = exp_pkt_A_q.pop_front();
+     end else if (port==3) begin
+       exp = exp_pkt_B_q.pop_front();
+     end
+     if(pkt.compare_pkt(exp)) begin
+       $display("Packet on port 2 (output A) matches");
+     end else begin
+       $display("Packet on port 2 (output A) mismatches");
+     end
+   endfunction
+
 endclass
