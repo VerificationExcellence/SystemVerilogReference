@@ -7,6 +7,13 @@ class eth_packet_gen_c;
   //Implement a random member for number of packets to be generated
   rand int num_pkts;
 
+  //constraint num_pkts
+  constraint num_pkt_c {
+    num_pkts dist {
+      [5:15]:=60, [20:40]:=40
+    };
+  }
+
   //Use a mail box and put these generated packets into that
   //This mailbox will be later used by the driver
   mailbox mbx_out;
