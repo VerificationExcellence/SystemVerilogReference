@@ -14,5 +14,26 @@ To compile and simulation in Questa/ModelSim:
 4) vopt +acc packet_tb_top -o dbg_pkt_tb_tp  (Note: This step is only to not do a design optimization for full visibility)
 5) vsim dbg_pkt_top   (Opens GUI) Use   vsim -c dbg_pkt_top to run in Batch Mode
 
+Note: If you are using ModelSim SE (free version) - please give  extra argument +define+NO_RANDOMIZE  to vlog
+This is because  free simulator doesnt support  SystemVerilog  randomize() function and hence I have a custom function to randomize in env/eth_packet.svh
+
+
 To compile and simulation in www.edaplayground.com
 =============================================
+1) Go to www.edaplayground.com
+2) You will see two windows - one on left as Testbench and one on right as design
+3) EDA playground has a limitation of 10 files at a max. So do something like following
+4) Upload all dut/* files on right side - design window - but  then copy all module definitions to a single file
+5) Upload all env/* files on left side - testbench window
+   Now since edaplayground needs your top level file as testbench.sv, you will have to copy your contents from env/packet_tb_top.sv to testbench.sv
+   
+6) On the left side options - you will see a place to enter  compile and run options 
+   In the second line enter  " +define+NO_RANDOMIZE "
+   
+7) All set and now you can hit run.
+
+For a reference edaplayground sessioin - load up http://www.edaplayground.com/x/2jn
+
+8) Further keep modifying as per your wish and keep learning .
+
+Hope this helps.
