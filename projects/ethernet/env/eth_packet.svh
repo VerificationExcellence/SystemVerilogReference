@@ -33,6 +33,36 @@ class eth_packet_c;
  function new();
  endfunction
 
+ //CAll this only for ModelSim/eda playground as randomize() is not supported by free simulators
+ function void build_custom_random();
+   randcase
+     25: begin
+       src_addr= 'hABCD; dst_addr='hBEEF;
+     end
+     25: begin
+       src_addr= 'hABCD; dst_addr='hABCD;
+     end
+     25: begin
+       src_addr= 'hBEEF; dst_addr='hABCD;
+     end
+     25: begin
+       src_addr= 'hBEEF; dst_addr='hBEEF;
+     end
+   endcase
+   fill_pkt_data();
+   post_randomize();
+ endfunction
+
+ function void fill_pkt_data();
+   int pkt_data_size;
+   pkt_data_size = $urandom_range(8,24);
+   //make it dword aligned (multiple of 4)
+   pkt_data_size = (pkt_data_size >> 2) <<2;
+   for(int i=0; i < pkt_data_size;i++) begin
+     pkt_data.push_back($urandom());
+   end
+ endfunction
+
  function bit[31:0] compute_crc();
    //TBD
    return 'hABCDDEAD;

@@ -22,7 +22,11 @@ class eth_packet_gen_c;
     for (int i=0; i < num_pkts; i++) begin
       //Create packet , randomize and put to mailbox
       pkt = new();
+`ifdef NO_RANDOMIZE
+      pkt.build_custom_random();
+`else
       assert(pkt.randomize());
+`endif
       mbx_out.put(pkt);
     end
   endtask

@@ -1,6 +1,9 @@
 //----------------------
 //Top level module
 //----------------------
+`include "packet_tb_env.svh"
+`include "eth_sw_if.svh"
+
 import packet_tb_env_pkg::*; 
 
 module packet_tb_top;
