@@ -20,8 +20,8 @@ class eth_packet_drv_c;
   task run;
     eth_packet_c pkt;
     forever begin
-      pkt = mbx_input.get();
-      $display("Got packet = %s", pkt.to_string());
+      mbx_input.get(pkt);
+      $display("packet_drv::Got packet = %s", pkt.to_string());
       //Get the packet SA and accordingly drive on port A or port B
       if(pkt.src_addr == `PORTA_ADDR) begin
         drive_pkt_portA(pkt);
@@ -40,27 +40,30 @@ class eth_packet_drv_c;
     bit[31:0] cur_dword;
     count=0;
     numDwords= pkt.pkt_size_bytes/4;
+    $display("packet_drv::drive_pkt_portA: numDwords=%0d ",numDwords);
     forever @(posedge rtl_intf.clk) begin
       if(!rtl_intf.portAStall) begin
-         rtl_intf.inSopA <=1'b0;
-         rtl_intf.inEopA <=1'b0;
+         rtl_intf.eth_drv_cb.inSopA <=1'b0;
+         rtl_intf.eth_drv_cb.inEopA <=1'b0;
          cur_dword[7:0] = pkt.pkt_full[4*count];
          cur_dword[15:8] = pkt.pkt_full[4*count+1];
          cur_dword[23:16] = pkt.pkt_full[4*count+2];
          cur_dword[31:24] = pkt.pkt_full[4*count+3];
+         $display("time=%t packet_drv::drive_pkt_portA:count=%0d cur_dword=%h",$time,count,cur_dword);
          if(count==0) begin
-           rtl_intf.inSopA <=1'b1;
-           rtl_intf.inDataA <= cur_dword;
-           count++;
+           rtl_intf.eth_drv_cb.inSopA <=1'b1;
+           rtl_intf.eth_drv_cb.inDataA <= cur_dword;
+           count = count+1;
          end else if (count== numDwords-1) begin
-           rtl_intf.inEopA <=1'b1;
-           rtl_intf.inDataA <= cur_dword;
-           count++;
+           rtl_intf.eth_drv_cb.inEopA <=1'b1;
+           rtl_intf.eth_drv_cb.inDataA <= cur_dword;
+           count = count+1;
          end else if (count== numDwords) begin
+           count =0;
            break;
          end else begin
-           rtl_intf.inDataA <= cur_dword;
-           count++;
+           rtl_intf.eth_drv_cb.inDataA <= cur_dword;
+           count= count+1;
          end
       end
     end
@@ -73,26 +76,27 @@ class eth_packet_drv_c;
     bit[31:0] cur_dword;
     count=0;
     numDwords= pkt.pkt_size_bytes/4;
+    $display("packet_drv::drive_pkt_portB: numDwords=%0d ",numDwords);
     forever @(posedge rtl_intf.clk) begin
       if(!rtl_intf.portBStall) begin
-         rtl_intf.inSopB <=1'b0;
-         rtl_intf.inEopB <=1'b0;
+         rtl_intf.eth_drv_cb.inSopB <=1'b0;
+         rtl_intf.eth_drv_cb.inEopB <=1'b0;
          cur_dword[7:0] = pkt.pkt_full[4*count];
          cur_dword[15:8] = pkt.pkt_full[4*count+1];
          cur_dword[23:16] = pkt.pkt_full[4*count+2];
          cur_dword[31:24] = pkt.pkt_full[4*count+3];
          if(count==0) begin
-           rtl_intf.inSopB <=1'b1;
-           rtl_intf.inDataB <= cur_dword;
+           rtl_intf.eth_drv_cb.inSopB <=1'b1;
+           rtl_intf.eth_drv_cb.inDataB <= cur_dword;
            count++;
          end else if (count== numDwords-1) begin
-           rtl_intf.inEopB <=1'b1;
-           rtl_intf.inDataB <= cur_dword;
+           rtl_intf.eth_drv_cb.inEopB <=1'b1;
+           rtl_intf.eth_drv_cb.inDataB <= cur_dword;
            count++;
          end else if (count== numDwords) begin
            break;
          end else begin
-           rtl_intf.inDataB <= cur_dword;
+           rtl_intf.eth_drv_cb.inDataB <= cur_dword;
            count++;
          end
       end

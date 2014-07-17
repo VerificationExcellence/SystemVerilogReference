@@ -5,14 +5,7 @@ typedef eth_packet_c;
 class eth_packet_gen_c;
 
   //Implement a random member for number of packets to be generated
-  rand int num_pkts;
-
-  //constraint num_pkts
-  constraint num_pkt_c {
-    num_pkts dist {
-      [5:15]:=60, [20:40]:=40
-    };
-  }
+  int num_pkts;
 
   //Use a mail box and put these generated packets into that
   //This mailbox will be later used by the driver
@@ -25,6 +18,7 @@ class eth_packet_gen_c;
   //Method
   task run;
     eth_packet_c pkt;
+    num_pkts = 2; // $urandom_range(2,3);
     for (int i=0; i < num_pkts; i++) begin
       //Create packet , randomize and put to mailbox
       pkt = new();

@@ -19,7 +19,9 @@ class eth_packet_chk_c ;
   eth_packet_c exp_pkt_B_q[$];
 
   function new(mailbox mbx[4]);
-    this.mbx_in = mbx;
+    for(int i=0;i<4;i++) begin
+      this.mbx_in[i] = mbx[i];
+    end
   endfunction
 
   //--------------------
@@ -28,21 +30,21 @@ class eth_packet_chk_c ;
   //          - 2 of them keeps getting packets seen on output ports A and B and compares/checks agains expected packet Q
   //--------------------
   task run;
-    for(int i=0; i <4; i++) begin
+    $display("packet_chk::run() called");
       fork
-        begin
-         automatic int port;
-         port=i;
-         get_and_process_pkt(port);
-        end
-      join
-    end //for
+         get_and_process_pkt(0);
+         get_and_process_pkt(1);
+         get_and_process_pkt(2);
+         get_and_process_pkt(3);
+      join_none
   endtask
 
   task get_and_process_pkt(int port);
     eth_packet_c pkt;
+    $display("packet_chk::process_pkt on port=%0d called", port);
     forever begin
-      pkt = mbx_in[port].get();
+      mbx_in[port].get(pkt);
+      $display("time=%0t packet_chk::got packet on port=%0d packet=%s",$time, port, pkt.to_string());
       if(port <2) begin //input packets
         gen_exp_packet_q(pkt);
       end else begin //output packets

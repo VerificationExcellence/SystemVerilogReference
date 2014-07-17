@@ -5,11 +5,22 @@ class eth_packet_c;
 
   rand bit[31:0]  src_addr;
   rand bit[31:0]  dst_addr;
-  rand byte pkt_data[];
+  rand byte pkt_data[$];
   bit [31:0]  pkt_crc;
 
   int pkt_size_bytes;
-  byte pkt_full[];
+  byte pkt_full[$];
+
+  constraint addr_c {
+    src_addr inside {'hABCD, 'hBEEF};
+    dst_addr inside {'hABCD, 'hBEEF};
+  }
+
+  constraint pkt_data_c {
+    pkt_data.size() >= 4;
+    pkt_data.size() <= 32;
+    pkt_data.size()%4==0;
+  }
 
   //constraints for small/large/medium packets
 
@@ -24,27 +35,31 @@ class eth_packet_c;
 
  function bit[31:0] compute_crc();
    //TBD
+   return 'hABCDDEAD;
  endfunction
 
  function void post_randomize();
    pkt_crc =  compute_crc();
    pkt_size_bytes = pkt_data.size() + 4+4+4; //data byes + 4B src +4B dest + 4B CRC
-   pkt_full = new[pkt_size_bytes];
    for(int i=0; i < 4; i++) begin
-       pkt_full[i] = src_addr >> i*8;  //0 to 3 bytes SA
-       pkt_full[i+4] = dst_addr >> (i-4)*8; //4 to 7 bytes DA
-       pkt_full[i+4+pkt_data.size] = pkt_crc >> (i-4)*8; //last 4 bytes CRC
+       pkt_full.push_back( dst_addr >> i*8);  //0 to 3 bytes DA
+   end
+   for(int i=0; i < 4; i++) begin
+       pkt_full.push_back(src_addr >> i*8); //4 to 7 bytes SA
    end
    //Actual Data bytes
    for(int i=0; i < pkt_data.size; i++) begin
-       pkt_full[i+8] = pkt_data[i];
+       pkt_full.push_back(pkt_data[i]);
+   end
+   for(int i=0; i < 4; i++) begin
+       pkt_full.push_back(pkt_crc >> i*8); //last 4 bytes CRC
    end
  endfunction
 
  //return a string that prints all fields
  function string to_string();
    string msg;
-   msg = $sformat("sa=%x da=%x crc=%x",src_addr,dst_addr, pkt_crc);
+   msg = $psprintf("sa=%x da=%x crc=%x",src_addr,dst_addr, pkt_crc);
    return msg;
  endfunction
 

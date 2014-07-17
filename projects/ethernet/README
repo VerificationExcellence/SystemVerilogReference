@@ -1,6 +1,18 @@
 Example Ethernet switch project
+================================
+Directory structure:
 
-Design Specification:
+1) dut - Has RTL files
+2) env - Has TB components
 
+To compile and simulation in Questa/ModelSim:
+=============================================
 
-Testbench details
+1) Be in this ethernet directory
+2) vlib work
+3) vlog -sv -f file.f +incdir+env
+4) vopt +acc packet_tb_top -o dbg_pkt_tb_tp  (Note: This step is only to not do a design optimization for full visibility)
+5) vsim dbg_pkt_top   (Opens GUI) Use   vsim -c dbg_pkt_top to run in Batch Mode
+
+To compile and simulation in www.edaplayground.com
+=============================================

@@ -54,8 +54,9 @@ class packet_tb_env_c;
     packet_gen = new(mbx_gen_drv);
     packet_driver = new (mbx_gen_drv,intf);
     //Create monitor and mailbox to connect checker and monitor
-    for(int i=0; i < 2*`NUMPORTS; i++) begin
+    for(int i=0; i < 4; i++) begin
       mbx_mon_chk[i] = new();
+      $display("Create mailbox =%0d for mon-check",i);
     end
     packet_mon = new (mbx_mon_chk,intf);
     //Create a checker instance and pass the 4 mailboxes from which it can get packets
@@ -65,6 +66,7 @@ class packet_tb_env_c;
   //Main evaluation method - run()
   task run();
     //Fork all component run();
+    $display("packet_tb_env::run() called");
     fork 
       packet_gen.run();
       packet_driver.run();
