@@ -1,5 +1,23 @@
-This repository contains examples, sample projects for students and passionate verification engineers to share with others
+This repository contains examples and sample short projects that can be used to learn basic concepts of 
+functional verification using SystemVerilog
 
-examples  directory contains several system verilog examples classified under different sections
+You can browse the code freely. If you want to clone a local copy - you need to first install git and then do following 
+on a git bash shell
 
-project directory contains small projects that contain example projects that people can refer
+1) git clone https://github.com/verificationexcellence/SystemVerilogReference
+
+There are two main sub directories in this repository
+1) examples
+     This directory contains several system verilog examples that you can refer through
+2) project 
+    This directory will eventually contain short projects that takes a smaller design and builds a complete verification
+    testbench around the same.
+    For now - the only one project is a simple 2x2 port ethernet switch (dut and env)
+    
+    
+For more specific details on how to run simulations - see the README files in  examples/project sub-directories    
+
+Thanks
+VerificationExcellence
+Learn more  www.verificationexcellence.in
+Contact  verif.excellence@gmail.com for questions
