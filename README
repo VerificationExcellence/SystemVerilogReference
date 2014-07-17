@@ -2,7 +2,8 @@ This repository contains examples and sample short projects that can be used to 
 functional verification using SystemVerilog
 
 You can browse the code freely. If you want to clone a local copy - you need to first install git and then do following 
-on a git bash shell
+on a git bash shell 
+(Refer http://readwrite.com/2013/09/30/understanding-github-a-journey-for-beginners-part-1 for basic github tutorial)
 
 1) git clone https://github.com/verificationexcellence/SystemVerilogReference
 
