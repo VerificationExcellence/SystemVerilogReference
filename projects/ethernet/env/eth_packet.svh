@@ -35,17 +35,19 @@ class eth_packet_c;
 
  //CAll this only for ModelSim/eda playground as randomize() is not supported by free simulators
  function void build_custom_random();
-   randcase
-     25: begin
+   int rand_num;
+   rand_num=$urandom_range(0,3);
+   case(rand_num)
+     0: begin
        src_addr= 'hABCD; dst_addr='hBEEF;
      end
-     25: begin
+     1: begin
        src_addr= 'hABCD; dst_addr='hABCD;
      end
-     25: begin
+     2: begin
        src_addr= 'hBEEF; dst_addr='hABCD;
      end
-     25: begin
+     3: begin
        src_addr= 'hBEEF; dst_addr='hBEEF;
      end
    endcase
