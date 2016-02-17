@@ -11,7 +11,7 @@ module dual_port_ram(
               input  logic           write_en    ,       // 1 => write port enabled
                input  logic  [7:0]   write_address ,     // Memory Write port address
               input  logic           read_en,            // 1 => read port enabled
-              input  logic  [7:0]    read_address ,      // Memory Read port address
+              input  logic  [7:0]    read_address       // Memory Read port address
               );
  
 
