@@ -1,0 +1,23 @@
+//Example for a package
+
+//Package for some commonly used utils, definitions
+package common_utils_pkg;
+  
+  parameter sting proj_name = "sv_demo";
+  
+  typedef enum {ADD, SUB, MUL} opcodes_t;
+
+  class instruction_generator;
+  
+     rand opcodes_t opcode;
+     rand bit[31:0]  op0;
+     rand bit[31:0]  op1;
+  
+  endclass
+
+  function display_instr();
+    $display("opcode =%s  op0=%0h op1=%0h",opcode.name(), op0, op1);
+  endfunction
+
+endpackage
+
