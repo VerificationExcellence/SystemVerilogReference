@@ -1,6 +1,6 @@
 //----------
 // Sample code to illustrate usage of associative arrays
-//  - Ramdas M  
+//  - Ramdas M  (www.verificationexcellence.in)
 //----------
 module test;
 
