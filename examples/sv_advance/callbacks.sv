@@ -50,15 +50,18 @@ module test;
 
     endclass //test
 
+    Driver drv_h;
+    test t_h;
+
     initial
     begin
 
-        Driver drv_h = new();
+        drv_h = new();
 
         //
         //To achieve callback
         //
-        test t_h = new();
+        t_h = new();
         drv_h.drv_cb_h = t_h;
 
         drv_h.run();
