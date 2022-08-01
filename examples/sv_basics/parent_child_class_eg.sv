@@ -3,9 +3,9 @@
 // Ramdas M (www.verificationexcellence.in)
 //-----------------
 class Packet;
-  bit [31:0] addr;
+  bit [31:0] get_addr;
   bit err=0;
-  function int get_addr();
+  virtual function int get_addr();
   //virtual function int get_addr();
     get_addr = 'hABCD;
   endfunction
